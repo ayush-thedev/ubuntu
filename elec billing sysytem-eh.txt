@@ -1,0 +1,105 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class ElectricityConsumption {
+private:
+    string name, id, phone, city, gender;
+    string issueDate, dueDate;
+    int age, consumptionDays, units;
+    double ratePerUnit, billAmount;
+    int billNo, consumerNo;
+
+public:
+    void generateBill() {
+        try {
+            cout << "Enter Bill Number: ";
+            cin >> billNo;
+            cin.ignore();
+
+            cout << "Enter Consumer Name: ";
+            getline(cin, name);
+
+            cout << "Enter Consumer Number: ";
+            cin >> consumerNo;
+            cin.ignore();
+
+            cout << "Enter Consumer ID (Aadhar/PAN): ";
+            getline(cin, id);
+
+            cout << "Enter Age: ";
+            cin >> age;
+            if (age < 18 || age > 60)
+                throw "Invalid age! Age must be between 18 and 60.";
+
+            cout << "Enter Gender: ";
+            cin >> gender;
+
+            cout << "Enter Phone Number: ";
+            cin >> phone;
+            if (phone.length() != 10)
+                throw "Invalid phone number! Must contain exactly 10 digits.";
+
+            cout << "Enter City: ";
+            cin >> city;
+
+            cout << "Enter Consumption Period (in days): ";
+            cin >> consumptionDays;
+
+            cout << "Enter Date of Issue (DD/MM/YYYY): ";
+            cin >> issueDate;
+
+            cout << "Enter Due Date (DD/MM/YYYY): ";
+            cin >> dueDate;
+            if (dueDate.length() != 10 || dueDate[2] != '/' || dueDate[5] != '/')
+                throw "Invalid due date format! Use DD/MM/YYYY.";
+
+            cout << "Enter Total Units Consumed: ";
+            cin >> units;
+
+            cout << "Enter Rate per Unit (Rs): ";
+            cin >> ratePerUnit;
+
+            // Basic bill calculation
+            billAmount = units * ratePerUnit;
+
+            if (units > 300) {
+                cout << "\n⚠️ Consumption exceeds 300 units! Penalty of Rs. 500 applied.\n";
+                billAmount += 500; // penalty added
+            }
+
+            cout << "\n✅ Bill generated successfully!\n";
+            printBill();
+        }
+        catch (const char* msg) {
+            cout << "\n⚠️ Exception: " << msg << endl;
+        }
+    }
+
+    void printBill() {
+        cout << "\n----- Electricity Bill -----\n";
+        cout << "Bill No: " << billNo << endl;
+        cout << "Consumer Name: " << name << endl;
+        cout << "Consumer No: " << consumerNo << endl;
+        cout << "ID: " << id << endl;
+        cout << "Age: " << age << endl;
+        cout << "Gender: " << gender << endl;
+        cout << "Phone: " << phone << endl;
+        cout << "City: " << city << endl;
+        cout << "Consumption Period: " << consumptionDays << " days\n";
+        cout << "Date of Issue: " << issueDate << endl;
+        cout << "Due Date: " << dueDate << endl;
+        cout << "Units Consumed: " << units << endl;
+        cout << "Rate per Unit: Rs. " << ratePerUnit << endl;
+        cout << "Total Bill Amount: Rs. " << billAmount << endl;
+        cout << "-----------------------------\n";
+    }
+};
+
+int main() {
+    ElectricityConsumption e;
+    e.generateBill();
+
+    cout << "\nProgram executed successfully.\n";
+    return 0;
+}

@@ -1,0 +1,101 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+template <class T>
+class SortingUtility {
+private:
+    vector<T> arr;
+
+public:
+    // Add element to array
+    void addElement(T e) {
+        arr.push_back(e);
+    }
+
+    // Display all elements
+    void displayElements() {
+        for (T val : arr)
+            cout << val << " ";
+        cout << endl;
+    }
+
+    // Sort using Bubble Sort
+    void sort() {
+        int n = arr.size();
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                if (arr[j] > arr[j + 1]) {
+                    swap(arr[j], arr[j + 1]);
+                }
+            }
+        }
+    }
+};
+
+int main() {
+    int n, choice;
+    cout << "Choose data type to sort:\n";
+    cout << "1. Integer\n2. Float\n3. String\n";
+    cin >> choice;
+
+    cout << "Enter number of elements: ";
+    cin >> n;
+
+    // Integer Sorting
+    if (choice == 1) {
+        SortingUtility<int> sorter;
+        cout << "Enter " << n << " integers:\n";
+        for (int i = 0; i < n; i++) {
+            int x;
+            cin >> x;
+            sorter.addElement(x);
+        }
+        cout << "Before Sorting: ";
+        sorter.displayElements();
+
+        sorter.sort();
+        cout << "After Sorting: ";
+        sorter.displayElements();
+    }
+
+    // Float Sorting
+    else if (choice == 2) {
+        SortingUtility<float> sorter;
+        cout << "Enter " << n << " floats:\n";
+        for (int i = 0; i < n; i++) {
+            float x;
+            cin >> x;
+            sorter.addElement(x);
+        }
+        cout << "Before Sorting: ";
+        sorter.displayElements();
+
+        sorter.sort();
+        cout << "After Sorting: ";
+        sorter.displayElements();
+    }
+
+    // String Sorting
+    else if (choice == 3) {
+        SortingUtility<string> sorter;
+        cout << "Enter " << n << " strings:\n";
+        for (int i = 0; i < n; i++) {
+            string x;
+            cin >> x;
+            sorter.addElement(x);
+        }
+        cout << "Before Sorting: ";
+        sorter.displayElements();
+
+        sorter.sort();
+        cout << "After Sorting: ";
+        sorter.displayElements();
+    }
+
+    else {
+        cout << "Invalid choice!" << endl;
+    }
+
+    return 0;
+}

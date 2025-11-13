@@ -1,0 +1,144 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class BankAccount {
+private:
+    int acc_id;
+    string acc_type;
+    string acc_name;
+    string cust_address;
+    string cust_contactno;
+    double balance;
+    
+    static int total_accounts;
+    static int saving_accounts;
+    static int current_accounts;
+
+public:
+    // Default Constructor
+    BankAccount() {
+        acc_id = 0;
+        acc_type = "Saving";
+        acc_name = "Unknown";
+        cust_address = "Unknown";
+        cust_contactno = "0000000000";
+        balance = 0.0;
+        total_accounts++;
+        saving_accounts++;
+    }
+    
+    // Parameterized Constructor
+    BankAccount(int id, string type, string name, string address, string contact, double bal) {
+        acc_id = id;
+        acc_type = type;
+        acc_name = name;
+        cust_address = address;
+        cust_contactno = contact;
+        balance = bal;
+        total_accounts++;
+        if (type == "Saving") {
+            saving_accounts++;
+        } else {
+            current_accounts++;
+        }
+        cout << "Account created: ID=" << acc_id << ", Type=" << acc_type << endl;
+    }
+    
+    // Destructor
+    ~BankAccount() {
+        cout << "Destroying Account ID: " << acc_id << endl;
+    }
+    
+    void deposit(double amount) {
+        balance += amount;
+        cout << "Amount deposited: " << amount << endl;
+        cout << "Current Balance: " << balance << endl;
+    }
+    
+    void withdraw(double amount) {
+        if (amount <= balance) {
+            balance -= amount;
+            cout << "Amount withdrawn: " << amount << endl;
+            cout << "Remaining Balance: " << balance << endl;
+        } else {
+            cout << "Insufficient balance!" << endl;
+        }
+    }
+    
+    double getBalance() {
+        return balance;
+    }
+    
+    void displayAccountDetails() {
+        cout << "\nAccount ID: " << acc_id << endl;
+        cout << "Type: " << acc_type << endl;
+        cout << "Name: " << acc_name << endl;
+        cout << "Address: " << cust_address << endl;
+        cout << "Contact: " << cust_contactno << endl;
+        cout << "Balance: " << balance << endl;
+    }
+    
+    static void displayAccountCounts() {
+        cout << "\nTotal Accounts: " << total_accounts << endl;
+        cout << "Saving: " << saving_accounts << ", Current: " << current_accounts << endl;
+    }
+};
+
+// Initialize static members
+int BankAccount::total_accounts = 0;
+int BankAccount::saving_accounts = 0;
+int BankAccount::current_accounts = 0;
+
+int main() {
+    int id, choice;
+    string type, name, address, contact;
+    double bal, amount;
+    
+    cout << "Enter Account ID: ";
+    cin >> id;
+    cout << "Enter Account Type (Saving/Current): ";
+    cin >> type;
+    cout << "Enter Account Holder Name: ";
+    cin.ignore();
+    getline(cin, name);
+    cout << "Enter Address: ";
+    getline(cin, address);
+    cout << "Enter Contact Number: ";
+    cin >> contact;
+    cout << "Enter Initial Balance: ";
+    cin >> bal;
+    
+    BankAccount acc1(id, type, name, address, contact, bal);
+    
+    do {
+        cout << "\n1. Deposit\n2. Withdraw\n3. Display Details\n4. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
+        
+        switch(choice) {
+            case 1:
+                cout << "Enter amount to deposit: ";
+                cin >> amount;
+                acc1.deposit(amount);
+                break;
+            case 2:
+                cout << "Enter amount to withdraw: ";
+                cin >> amount;
+                acc1.withdraw(amount);
+                break;
+            case 3:
+                acc1.displayAccountDetails();
+                break;
+            case 4:
+                cout << "Exiting...\n";
+                break;
+            default:
+                cout << "Invalid choice!\n";
+        }
+    } while(choice != 4);
+    
+    BankAccount::displayAccountCounts();
+    
+    return 0;
+}

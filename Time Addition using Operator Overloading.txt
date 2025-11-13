@@ -1,0 +1,83 @@
+#include <iostream>
+using namespace std;
+
+class Time {
+    int hours, minutes;
+
+public:
+    // Default constructor
+    Time() {
+        hours = 0;
+        minutes = 0;
+    }
+
+    // Parameterized constructor
+    Time(int h, int m) {
+        hours = h;
+        minutes = m;
+        normalize();
+    }
+
+    // Function to normalize minutes into hours
+    void normalize() {
+        if (minutes >= 60) {
+            hours += minutes / 60;
+            minutes %= 60;
+        }
+    }
+
+    // Friend function for input
+    friend istream& operator>>(istream& in, Time& t);
+
+    // Friend function for addition
+    friend Time operator+(Time t1, Time t2);
+
+    // Prefix increment operator (++)
+    Time operator++() {
+        ++hours;
+        return *this;
+    }
+
+    // Display function
+    void display() {
+        cout << hours << " hours " << minutes << " minutes" << endl;
+    }
+};
+
+// Overload >> operator for input
+istream& operator>>(istream& in, Time& t) {
+    in >> t.hours >> t.minutes;
+    return in;
+}
+
+// Overload + operator using friend function
+Time operator+(Time t1, Time t2) {
+    Time temp;
+    temp.hours = t1.hours + t2.hours;
+    temp.minutes = t1.minutes + t2.minutes;
+    temp.normalize();
+    return temp;
+}
+
+// Main function
+int main() {
+    Time t1, t2, sum;
+
+    cout << "Enter first time (hh mm): ";
+    cin >> t1;
+
+    cout << "Enter second time (hh mm): ";
+    cin >> t2;
+
+    sum = t1 + t2;
+
+    cout << "Sum of times: ";
+    sum.display();
+
+    ++sum;  // Increment time by 1 hour
+
+    cout << "After increment: ";
+    sum.display();
+
+    return 0;
+}

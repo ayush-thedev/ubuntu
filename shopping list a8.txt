@@ -1,0 +1,109 @@
+#include <iostream>
+#include <list>
+#include <algorithm>
+#include <string>
+
+using namespace std;
+
+// Function to display the shopping list using iterators
+void displayList(const list<string>& shoppingList) {
+    if (shoppingList.empty()) {
+        cout << "Shopping list is empty!" << endl;
+        return;
+    }
+    
+    cout << "\n=== Shopping List ===" << endl;
+    int index = 1;
+    for (list<string>::const_iterator it = shoppingList.begin(); 
+         it != shoppingList.end(); ++it) {
+        cout << index++ << ". " << *it << endl;
+    }
+    cout << "=====================\n" << endl;
+}
+
+int main() {
+    // 1. Create an empty list using STL container
+    list<string> shoppingList;
+    cout << "Step 1: Created an empty shopping list.\n" << endl;
+    
+    // 2. Append items to the list
+    cout << "Step 2: Adding items to the list..." << endl;
+    shoppingList.push_back("eggs");
+    shoppingList.push_back("milk");
+    shoppingList.push_back("sugar");
+    shoppingList.push_back("chocolate");
+    shoppingList.push_back("flour");
+    cout << "Added: eggs, milk, sugar, chocolate, flour" << endl;
+    
+    // 3. Display all items using iterators
+    cout << "\nStep 3: Displaying all items:" << endl;
+    displayList(shoppingList);
+    
+    // 4. Remove the first element
+    cout << "Step 4: Removing the first element..." << endl;
+    if (!shoppingList.empty()) {
+        string removed = shoppingList.front();
+        shoppingList.pop_front();
+        cout << "Removed: " << removed << endl;
+        displayList(shoppingList);
+    }
+    
+    // 5. Insert "coffee" at the beginning
+    cout << "Step 5: Inserting 'coffee' at the beginning..." << endl;
+    shoppingList.push_front("coffee");
+    displayList(shoppingList);
+    
+    // 6. Find "sugar" and replace it with "honey"
+    cout << "Step 6: Finding 'sugar' and replacing with 'honey'..." << endl;
+    list<string>::iterator it = find(shoppingList.begin(), shoppingList.end(), "sugar");
+    if (it != shoppingList.end()) {
+        *it = "honey";
+        cout << "Replaced 'sugar' with 'honey'" << endl;
+    } else {
+        cout << "'sugar' not found in the list!" << endl;
+    }
+    displayList(shoppingList);
+    
+    // 7. Insert "baking powder" before "milk"
+    cout << "Step 7: Inserting 'baking powder' before 'milk'..." << endl;
+    it = find(shoppingList.begin(), shoppingList.end(), "milk");
+    if (it != shoppingList.end()) {
+        shoppingList.insert(it, "baking powder");
+        cout << "Inserted 'baking powder' before 'milk'" << endl;
+    } else {
+        cout << "'milk' not found in the list!" << endl;
+    }
+    displayList(shoppingList);
+    
+    // 8. Sort the list alphabetically
+    cout << "Step 8: Sorting the list alphabetically..." << endl;
+    shoppingList.sort();
+    cout << "List sorted!" << endl;
+    displayList(shoppingList);
+    
+    // 9. Search for an item entered by the user
+    cout << "Step 9: Search for an item" << endl;
+    cout << "Enter an item to search: ";
+    string searchItem;
+    cin.ignore(); // Clear input buffer
+    getline(cin, searchItem);
+    
+    it = find(shoppingList.begin(), shoppingList.end(), searchItem);
+    if (it != shoppingList.end()) {
+        cout << "\n✓ '" << searchItem << "' EXISTS in the shopping list!" << endl;
+        // Find position
+        int position = distance(shoppingList.begin(), it) + 1;
+        cout << "Position: " << position << endl;
+    } else {
+        cout << "\n✗ '" << searchItem << "' NOT FOUND in the shopping list!" << endl;
+    }
+    
+    // Final display
+    cout << "\n=== Final Shopping List ===" << endl;
+    displayList(shoppingList);
+    
+    // Additional statistics
+    cout << "Total items in list: " << shoppingList.size() << endl;
+    
+    return 0;
+}

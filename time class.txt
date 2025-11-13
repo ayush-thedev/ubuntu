@@ -1,0 +1,71 @@
+#include <iostream>
+using namespace std;
+
+class Time {
+    int hours, minutes, seconds;
+    static int count;
+
+public:
+    // Default constructor
+    Time() {
+        hours = minutes = seconds = 0;
+        count++;
+    }
+
+    // Parameterized constructor
+    Time(int h, int m, int s) {
+        hours = h;
+        minutes = m;
+        seconds = s;
+        count++;
+    }
+
+    // Display time
+    void display() {
+        cout << (hours < 10 ? "0" : "") << hours << ":"
+             << (minutes < 10 ? "0" : "") << minutes << ":"
+             << (seconds < 10 ? "0" : "") << seconds << endl;
+    }
+
+    // Subtract times
+    Time duration(Time t2) {
+        int t1_sec = hours * 3600 + minutes * 60 + seconds;
+        int t2_sec = t2.hours * 3600 + t2.minutes * 60 + t2.seconds;
+        int diff = (t1_sec > t2_sec) ? t1_sec - t2_sec : t2_sec - t1_sec;
+
+        Time temp;
+        temp.hours = diff / 3600;
+        diff %= 3600;
+        temp.minutes = diff / 60;
+        temp.seconds = diff % 60;
+        return temp;
+    }
+
+    static void showCount() {
+        cout << "Total Time Objects: " << count << endl;
+    }
+};
+
+int Time::count = 0;
+
+int main() {
+    int h1, m1, s1, h2, m2, s2;
+    cout << "Enter Start Time (HH MM SS): ";
+    cin >> h1 >> m1 >> s1;
+    cout << "Enter End Time (HH MM SS): ";
+    cin >> h2 >> m2 >> s2;
+
+    Time start(h1, m1, s1);
+    Time end(h2, m2, s2);
+    Time diff = start.duration(end);
+
+    cout << "\nStart Time: ";
+    start.display();
+    cout << "End Time: ";
+    end.display();
+    cout << "Duration: ";
+    diff.display();
+
+    Time::showCount();
+    return 0;
+}

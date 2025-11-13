@@ -1,0 +1,144 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Base class
+class Employee {
+protected:
+    string Ename;
+    int EmpID;
+
+public:
+    // Default constructor
+    Employee() {
+        Ename = "";
+        EmpID = 0;
+    }
+
+    // Parameterized constructor
+    Employee(string name, int id) {
+        Ename = name;
+        EmpID = id;
+    }
+
+    // Display function
+    virtual void display() {
+        cout << "Employee ID: " << EmpID << endl;
+        cout << "Employee Name: " << Ename << endl;
+    }
+
+    // Virtual earnings function
+    virtual void earnings() {
+        cout << "Earnings: " << endl;
+    }
+};
+
+// Derived class 1
+class SalariedEmployee : public Employee {
+    double weeklySalary;
+
+public:
+    SalariedEmployee() : Employee() {
+        weeklySalary = 0;
+    }
+
+    SalariedEmployee(string name, int id, double salary) : Employee(name, id) {
+        weeklySalary = salary;
+    }
+
+    void earnings() override {
+        cout << "Weekly Salary: " << weeklySalary << endl;
+    }
+
+    void display() override {
+        Employee::display();
+        earnings();
+    }
+};
+
+// Derived class 2
+class HourlyEmployee : public Employee {
+    double wage, hours, hourlySalary;
+
+public:
+    HourlyEmployee() : Employee() {
+        wage = hours = hourlySalary = 0;
+    }
+
+    HourlyEmployee(string name, int id, double w, double h) : Employee(name, id) {
+        wage = w;
+        hours = h;
+    }
+
+    void earnings() override {
+        if (hours < 40)
+            hourlySalary = hours * wage;
+        else
+            hourlySalary = 40 * wage + ((hours - 40) * wage * 1.5);
+
+        cout << "Hourly Salary: " << hourlySalary << endl;
+    }
+
+    void display() override {
+        Employee::display();
+        earnings();
+    }
+};
+
+// Derived class 3
+class CommissionEmployee : public Employee {
+    double grossSales, commissionRate, commissionSalary;
+
+public:
+    CommissionEmployee() : Employee() {
+        grossSales = commissionRate = commissionSalary = 0;
+    }
+
+    CommissionEmployee(string name, int id, double sales, double rate) : Employee(name, id) {
+        grossSales = sales;
+        commissionRate = rate;
+    }
+
+    void earnings() override {
+        commissionSalary = grossSales * commissionRate;
+        cout << "Commission Salary: " << commissionSalary << endl;
+    }
+
+    void display() override {
+        Employee::display();
+        earnings();
+    }
+};
+
+// Main function
+int main() {
+    string name;
+    int id;
+
+    cout << "Enter Salaried Employee details (Name ID WeeklySalary): ";
+    double weeklySalary;
+    cin >> name >> id >> weeklySalary;
+    SalariedEmployee s(name, id, weeklySalary);
+
+    cout << "\nEnter Hourly Employee details (Name ID Wage Hours): ";
+    double wage, hours;
+    cin >> name >> id >> wage >> hours;
+    HourlyEmployee h(name, id, wage, hours);
+
+    cout << "\nEnter Commission Employee details (Name ID GrossSales CommissionRate): ";
+    double sales, rate;
+    cin >> name >> id >> sales >> rate;
+    CommissionEmployee c(name, id, sales, rate);
+
+    cout << "\n--- Employee Details and Earnings ---\n";
+    cout << "\nSalaried Employee:\n";
+    s.display();
+
+    cout << "\nHourly Employee:\n";
+    h.display();
+
+    cout << "\nCommission Employee:\n";
+    c.display();
+
+    return 0;
+}

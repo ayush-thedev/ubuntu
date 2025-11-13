@@ -1,0 +1,74 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class TrainJourney {
+private:
+    string name, phone, doj, dob, source, destination;
+    int age, travellers;
+
+public:
+    void bookTicket() {
+        try {
+            cout << "Enter applicant name: ";
+            getline(cin, name);
+
+            cout << "Enter age: ";
+            cin >> age;
+            if (age < 18 || age > 60)
+                throw "Invalid age! Age must be between 18 and 60.";
+
+            cout << "Enter phone number: ";
+            cin >> phone;
+            if (phone.length() != 10)
+                throw "Invalid phone number! It must have 10 digits.";
+
+            cout << "Enter date of booking (DD/MM/YYYY): ";
+            cin >> dob;
+            if (dob.length() != 10 || dob[2] != '/' || dob[5] != '/')
+                throw "Invalid date format for booking!";
+
+            cout << "Enter date of journey (DD/MM/YYYY): ";
+            cin >> doj;
+            if (doj.length() != 10 || doj[2] != '/' || doj[5] != '/')
+                throw "Invalid date format for journey!";
+
+            cout << "Enter source station: ";
+            cin >> source;
+
+            cout << "Enter destination station: ";
+            cin >> destination;
+
+            cout << "Enter number of travellers: ";
+            cin >> travellers;
+            if (travellers > 6)
+                throw "Too many travellers! Maximum allowed is 6.";
+
+            cout << "\n✅ Ticket booked successfully!\n";
+            printTicket();
+        }
+        catch (const char* msg) {
+            cout << "\n⚠️ Exception: " << msg << endl;
+        }
+    }
+
+    void printTicket() {
+        cout << "\n----- Ticket Details -----\n";
+        cout << "Name: " << name << endl;
+        cout << "Age: " << age << endl;
+        cout << "Phone: " << phone << endl;
+        cout << "Booking Date: " << dob << endl;
+        cout << "Journey Date: " << doj << endl;
+        cout << "From: " << source << "  To: " << destination << endl;
+        cout << "Travellers: " << travellers << endl;
+        cout << "---------------------------\n";
+    }
+};
+
+int main() {
+    TrainJourney t;
+    t.bookTicket();
+
+    cout << "\nProgram executed successfully.\n";
+    return 0;
+}

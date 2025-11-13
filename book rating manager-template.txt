@@ -1,0 +1,89 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+template <typename T>
+class BookRatingManager {
+private:
+    vector<T> ratings;
+
+public:
+    // Add a new rating
+    void addRating(T r) {
+        ratings.push_back(r);
+    }
+
+    // Display all ratings
+    void displayRatings() const {
+        if (ratings.empty()) {
+            cout << "No ratings available." << endl;
+            return;
+        }
+        cout << "Book Ratings: ";
+        for (const auto &r : ratings)
+            cout << r << " ";
+        cout << endl;
+    }
+
+    // Find minimum rating
+    T getMinRating() const {
+        if (ratings.empty())
+            throw runtime_error("No ratings available!");
+        return *min_element(ratings.begin(), ratings.end());
+    }
+
+    // Find maximum rating
+    T getMaxRating() const {
+        if (ratings.empty())
+            throw runtime_error("No ratings available!");
+        return *max_element(ratings.begin(), ratings.end());
+    }
+
+    // Calculate average rating
+    double getAverageRating() const {
+        if (ratings.empty())
+            throw runtime_error("No ratings available!");
+        T sum = 0;
+        for (const auto &r : ratings)
+            sum += r;
+        return static_cast<double>(sum) / ratings.size();
+    }
+
+    // Search for a specific rating
+    bool searchRating(T r) const {
+        return find(ratings.begin(), ratings.end(), r) != ratings.end();
+    }
+};
+
+// Main function
+int main() {
+    BookRatingManager<double> manager;
+    int n;
+    double rating;
+
+    cout << "Enter number of ratings: ";
+    cin >> n;
+
+    for (int i = 0; i < n; i++) {
+        cout << "Enter rating " << i + 1 << ": ";
+        cin >> rating;
+        manager.addRating(rating);
+    }
+
+    cout << "\n--- Displaying Ratings ---" << endl;
+    manager.displayRatings();
+
+    cout << "\nLowest Rating: " << manager.getMinRating() << endl;
+    cout << "Highest Rating: " << manager.getMaxRating() << endl;
+    cout << "Average Rating: " << manager.getAverageRating() << endl;
+
+    cout << "\nEnter a rating to search: ";
+    cin >> rating;
+    if (manager.searchRating(rating))
+        cout << "Rating found!" << endl;
+    else
+        cout << "Rating not found!" << endl;
+
+    return 0;
+}

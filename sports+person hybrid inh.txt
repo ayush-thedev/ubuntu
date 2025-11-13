@@ -1,0 +1,157 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Base class
+class Person {
+protected:
+    string name;
+    int age;
+
+public:
+    // Default constructor
+    Person() {
+        name = "";
+        age = 0;
+    }
+
+    // Parameterized constructor
+    Person(string n, int a) {
+        name = n;
+        age = a;
+    }
+
+    // Virtual function for runtime polymorphism
+    virtual void calculate_result() {
+        cout << "Calculating result for person..." << endl;
+    }
+
+    virtual void display() {
+        cout << "Name: " << name << "\nAge: " << age << endl;
+    }
+
+    virtual ~Person() {} // Virtual destructor
+};
+
+// Derived class 1: Student (inherits from Person)
+class Student : virtual public Person {
+protected:
+    int roll_number;
+    float subject1_marks, subject2_marks, total_marks;
+
+public:
+    Student() : Person() {
+        roll_number = 0;
+        subject1_marks = subject2_marks = total_marks = 0;
+    }
+
+    Student(string n, int a, int r, float s1, float s2) : Person(n, a) {
+        roll_number = r;
+        subject1_marks = s1;
+        subject2_marks = s2;
+    }
+
+    void calculate_result() override {
+        total_marks = subject1_marks + subject2_marks;
+        cout << "Academic Marks: " << total_marks << endl;
+    }
+
+    void display() override {
+        Person::display();
+        cout << "Roll Number: " << roll_number
+             << "\nSubject 1: " << subject1_marks
+             << "\nSubject 2: " << subject2_marks << endl;
+    }
+};
+
+// Derived class 2: Sports (inherits from Person)
+class Sports : virtual public Person {
+protected:
+    string sports_name;
+    float sport1_score, sport2_score, total_sport_score;
+
+public:
+    Sports() : Person() {
+        sports_name = "";
+        sport1_score = sport2_score = total_sport_score = 0;
+    }
+
+    Sports(string n, int a, string sname, float sc1, float sc2) : Person(n, a) {
+        sports_name = sname;
+        sport1_score = sc1;
+        sport2_score = sc2;
+    }
+
+    void calculate_result() override {
+        total_sport_score = sport1_score + sport2_score;
+        cout << "Sports Performance Score: " << total_sport_score << endl;
+    }
+
+    void display() override {
+        Person::display();
+        cout << "Sports Name: " << sports_name
+             << "\nScore 1: " << sport1_score
+             << "\nScore 2: " << sport2_score << endl;
+    }
+};
+
+// Derived class 3: Result (inherits from Student and Sports)
+class Result : public Student, public Sports {
+    float grace_marks, final_result;
+
+public:
+    Result() : Person() {
+        grace_marks = final_result = 0;
+    }
+
+    Result(string n, int a, int r, float s1, float s2,
+           string sname, float sc1, float sc2, float grace)
+        : Person(n, a), Student(n, a, r, s1, s2), Sports(n, a, sname, sc1, sc2) {
+        grace_marks = grace;
+    }
+
+    void calculate_result() override {
+        float total_academic = subject1_marks + subject2_marks;
+        float total_sports = sport1_score + sport2_score;
+        final_result = total_academic + total_sports + grace_marks;
+        cout << "Final Result (Academic + Sports + Grace): " << final_result << endl;
+    }
+
+    void display() override {
+        cout << "\n--- RESULT DETAILS ---" << endl;
+        Person::display();
+        cout << "Roll Number: " << roll_number << endl;
+        cout << "Subjects Marks: " << subject1_marks << ", " << subject2_marks << endl;
+        cout << "Sports: " << sports_name << ", Scores: " << sport1_score << ", " << sport2_score << endl;
+        cout << "Grace Marks: " << grace_marks << endl;
+        calculate_result();
+    }
+};
+
+// Main function
+int main() {
+    string name, sports_name;
+    int age, roll;
+    float s1, s2, sc1, sc2, grace;
+
+    cout << "Enter Name and Age: ";
+    cin >> name >> age;
+    cout << "Enter Roll Number and Subject Marks (2): ";
+    cin >> roll >> s1 >> s2;
+    cout << "Enter Sports Name and Scores (2): ";
+    cin >> sports_name >> sc1 >> sc2;
+    cout << "Enter Grace Marks: ";
+    cin >> grace;
+
+    // Object of Result class
+    Result res(name, age, roll, s1, s2, sports_name, sc1, sc2, grace);
+
+    // Base class pointer for runtime polymorphism
+    Person *person = &res;
+
+    cout << "\n--- Using Base Class Pointer (Runtime Polymorphism) ---\n";
+    person->display();
+    person->calculate_result();
+
+    return 0;
+}

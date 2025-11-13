@@ -1,0 +1,137 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Base Class: Account
+class Account {
+protected:
+    int AccID;
+    string AccName;
+
+public:
+    // Default constructor
+    Account() {
+        AccID = 0;
+        AccName = "";
+    }
+
+    // Parameterized constructor
+    Account(int id, string name) {
+        AccID = id;
+        AccName = name;
+    }
+
+    // Virtual function (to be overridden)
+    virtual void showdetails() {
+        cout << "\n--- Account Details ---" << endl;
+        cout << "Account ID: " << AccID << "\nAccount Name: " << AccName << endl;
+    }
+
+    virtual ~Account() {}
+};
+
+// Derived Class 1: SavingsAccount
+class SavingsAccount : virtual public Account {
+protected:
+    float interest_rate;
+
+public:
+    SavingsAccount() : Account() {
+        interest_rate = 0;
+    }
+
+    SavingsAccount(int id, string name, float rate) : Account(id, name) {
+        interest_rate = rate;
+    }
+
+    void showdetails() override {
+        cout << "\n--- Savings Account Details ---" << endl;
+        cout << "Account ID: " << AccID << "\nAccount Name: " << AccName
+             << "\nInterest Rate: " << interest_rate << "%" << endl;
+    }
+};
+
+// Derived Class 2: CurrentAccount
+class CurrentAccount : virtual public Account {
+protected:
+    float OverDraftLimit;
+
+public:
+    CurrentAccount() : Account() {
+        OverDraftLimit = 0;
+    }
+
+    CurrentAccount(int id, string name, float limit) : Account(id, name) {
+        OverDraftLimit = limit;
+    }
+
+    void showdetails() override {
+        cout << "\n--- Current Account Details ---" << endl;
+        cout << "Account ID: " << AccID << "\nAccount Name: " << AccName
+             << "\nOverdraft Limit: ₹" << OverDraftLimit << endl;
+    }
+};
+
+// Hybrid Derived Class: PremiumAccount (inherits from both SavingsAccount and CurrentAccount)
+class PremiumAccount : public SavingsAccount, public CurrentAccount {
+    float annualFee;
+
+public:
+    PremiumAccount() : Account() {
+        annualFee = 0;
+    }
+
+    PremiumAccount(int id, string name, float rate, float limit, float fee)
+        : Account(id, name), SavingsAccount(id, name, rate), CurrentAccount(id, name, limit) {
+        annualFee = fee;
+    }
+
+    void showdetails() override {
+        cout << "\n--- Premium Account Details ---" << endl;
+        cout << "Account ID: " << AccID
+             << "\nAccount Name: " << AccName
+             << "\nInterest Rate: " << interest_rate << "%"
+             << "\nOverdraft Limit: ₹" << OverDraftLimit
+             << "\nAnnual Fee: ₹" << annualFee << endl;
+    }
+};
+
+// Main function
+int main() {
+    int id;
+    string name;
+    float rate, limit, fee;
+
+    cout << "Enter Account ID and Name: ";
+    cin >> id >> name;
+
+    cout << "Enter Interest Rate for Savings Account: ";
+    cin >> rate;
+
+    cout << "Enter Overdraft Limit for Current Account: ";
+    cin >> limit;
+
+    cout << "Enter Annual Fee for Premium Account: ";
+    cin >> fee;
+
+    // Create objects
+    SavingsAccount s(id, name, rate);
+    CurrentAccount c(id, name, limit);
+    PremiumAccount p(id, name, rate, limit, fee);
+
+    // Base class pointer for runtime polymorphism
+    Account *acc;
+
+    cout << "\n--- Using Base Class Pointer (Runtime Polymorphism) ---" << endl;
+
+    acc = &s;
+    acc->showdetails();
+
+    acc = &c;
+    acc->showdetails();
+
+    acc = &p;
+    acc->showdetails();
+
+    return 0;
+}

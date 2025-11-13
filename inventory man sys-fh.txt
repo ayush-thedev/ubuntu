@@ -1,0 +1,253 @@
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+class Inventory {
+    int item_id;
+    string item_name, supplier;
+    int quantity;
+    float price;
+
+public:
+    // Default constructor
+    Inventory() {
+        item_id = 0;
+        item_name = "";
+        supplier = "";
+        quantity = 0;
+        price = 0.0;
+    }
+
+    // Parameterized constructor
+    Inventory(int id, string name, int q, float p, string s) {
+        item_id = id;
+        item_name = name;
+        quantity = q;
+        price = p;
+        supplier = s;
+    }
+
+    // Get item details
+    void getdata() {
+        cout << "\nEnter Item ID: ";
+        cin >> item_id;
+        cin.ignore();
+        cout << "Enter Item Name: ";
+        getline(cin, item_name);
+        cout << "Enter Quantity: ";
+        cin >> quantity;
+        cout << "Enter Price: ";
+        cin >> price;
+        cin.ignore();
+        cout << "Enter Supplier Name: ";
+        getline(cin, supplier);
+    }
+
+    // Display item details
+    void displayItem() {
+        cout << "\nItem ID: " << item_id
+             << "\nItem Name: " << item_name
+             << "\nQuantity: " << quantity
+             << "\nPrice: ₹" << price
+             << "\nSupplier: " << supplier;
+        if (quantity < 10)
+            cout << "  --> ⚠️ Low Stock!";
+        cout << "\n-----------------------------------";
+    }
+
+    // Modify item (price or quantity)
+    void modifyItem() {
+        cout << "\nEnter new Price: ";
+        cin >> price;
+        cout << "Enter new Quantity: ";
+        cin >> quantity;
+    }
+
+    // Accessors
+    int getID() { return item_id; }
+    int getQuantity() { return quantity; }
+
+    // Update quantity after sale
+    void updateQuantity(int sold) {
+        if (sold <= quantity)
+            quantity -= sold;
+        else
+            cout << "\nNot enough stock!";
+    }
+};
+
+// Add new item
+void addItem() {
+    ofstream fout("inventory.dat", ios::binary | ios::app);
+    Inventory i;
+    i.getdata();
+    fout.write((char*)&i, sizeof(i));
+    fout.close();
+    cout << "\nItem added successfully!\n";
+}
+
+// Display all items
+void displayAll() {
+    ifstream fin("inventory.dat", ios::binary);
+    if (!fin) {
+        cout << "\nNo records found!\n";
+        return;
+    }
+    Inventory i;
+    while (fin.read((char*)&i, sizeof(i))) {
+        i.displayItem();
+    }
+    fin.close();
+}
+
+// Search item by ID
+void searchItem() {
+    ifstream fin("inventory.dat", ios::binary);
+    int id;
+    bool found = false;
+    Inventory i;
+    cout << "\nEnter Item ID to search: ";
+    cin >> id;
+    while (fin.read((char*)&i, sizeof(i))) {
+        if (i.getID() == id) {
+            cout << "\nItem Found!";
+            i.displayItem();
+            found = true;
+        }
+    }
+    if (!found)
+        cout << "\nItem not found!";
+    fin.close();
+}
+
+// Modify item record (price/quantity)
+void modifyItemRecord() {
+    fstream file("inventory.dat", ios::binary | ios::in | ios::out);
+    Inventory i;
+    int id;
+    bool found = false;
+
+    cout << "\nEnter Item ID to modify: ";
+    cin >> id;
+    while (file.read((char*)&i, sizeof(i))) {
+        if (i.getID() == id) {
+            i.modifyItem();
+            int pos = -1 * sizeof(i);
+            file.seekp(pos, ios::cur);
+            file.write((char*)&i, sizeof(i));
+            cout << "\nItem updated successfully!\n";
+            found = true;
+            break;
+        }
+    }
+    if (!found)
+        cout << "\nItem not found!";
+    file.close();
+}
+
+// Update quantity after sales
+void updateQuantity() {
+    fstream file("inventory.dat", ios::binary | ios::in | ios::out);
+    Inventory i;
+    int id, sold;
+    bool found = false;
+
+    cout << "\nEnter Item ID for sale: ";
+    cin >> id;
+    cout << "Enter Quantity Sold: ";
+    cin >> sold;
+
+    while (file.read((char*)&i, sizeof(i))) {
+        if (i.getID() == id) {
+            i.updateQuantity(sold);
+            int pos = -1 * sizeof(i);
+            file.seekp(pos, ios::cur);
+            file.write((char*)&i, sizeof(i));
+            cout << "\nQuantity updated successfully!\n";
+            found = true;
+            break;
+        }
+    }
+    if (!found)
+        cout << "\nItem not found!";
+    file.close();
+}
+
+// Delete item record
+void deleteItem() {
+    ifstream fin("inventory.dat", ios::binary);
+    ofstream fout("temp.dat", ios::binary);
+    Inventory i;
+    int id;
+    bool deleted = false;
+
+    cout << "\nEnter Item ID to delete: ";
+    cin >> id;
+
+    while (fin.read((char*)&i, sizeof(i))) {
+        if (i.getID() != id)
+            fout.write((char*)&i, sizeof(i));
+        else
+            deleted = true;
+    }
+
+    fin.close();
+    fout.close();
+    remove("inventory.dat");
+    rename("temp.dat", "inventory.dat");
+
+    if (deleted)
+        cout << "\nItem deleted successfully!\n";
+    else
+        cout << "\nItem not found!";
+}
+
+// Display low stock items (<10)
+void lowStockItems() {
+    ifstream fin("inventory.dat", ios::binary);
+    Inventory i;
+    bool found = false;
+
+    cout << "\n--- Low Stock Items (Quantity < 10) ---\n";
+    while (fin.read((char*)&i, sizeof(i))) {
+        if (i.getQuantity() < 10) {
+            i.displayItem();
+            found = true;
+        }
+    }
+    if (!found)
+        cout << "\nNo low stock items found.";
+    fin.close();
+}
+
+// Main function
+int main() {
+    int choice;
+    do {
+        cout << "\n====== Inventory Management System ======";
+        cout << "\n1. Add New Item";
+        cout << "\n2. Display All Items";
+        cout << "\n3. Search Item by ID";
+        cout << "\n4. Modify Item (Price/Quantity)";
+        cout << "\n5. Update Quantity After Sale";
+        cout << "\n6. Delete Item Record";
+        cout << "\n7. Display Low Stock Items (<10)";
+        cout << "\n8. Exit";
+        cout << "\nEnter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1: addItem(); break;
+        case 2: displayAll(); break;
+        case 3: searchItem(); break;
+        case 4: modifyItemRecord(); break;
+        case 5: updateQuantity(); break;
+        case 6: deleteItem(); break;
+        case 7: lowStockItems(); break;
+        case 8: cout << "\nExiting System..."; break;
+        default: cout << "\nInvalid choice!";
+        }
+    } while (choice != 8);
+
+    return 0;
+}

@@ -1,0 +1,177 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Base class
+class Employee {
+protected:
+    int EmpID;
+    string Emp_name;
+    string designation;
+
+public:
+    // Default constructor
+    Employee() {
+        EmpID = 0;
+        Emp_name = "";
+        designation = "";
+    }
+
+    // Parameterized constructor
+    Employee(int id, string name, string desg) {
+        EmpID = id;
+        Emp_name = name;
+        designation = desg;
+    }
+
+    // Virtual function for runtime polymorphism
+    virtual void calculatepay() {
+        cout << "Calculating pay for Employee..." << endl;
+    }
+
+    virtual void display() {
+        cout << "\nEmployee ID: " << EmpID
+             << "\nEmployee Name: " << Emp_name
+             << "\nDesignation: " << designation << endl;
+    }
+
+    virtual ~Employee() {}
+};
+
+// Derived Class 1: SalariedEmployee
+class SalariedEmployee : virtual public Employee {
+protected:
+    float basicSalary, DA, HRA, grossSalary;
+
+public:
+    SalariedEmployee() : Employee() {
+        basicSalary = DA = HRA = grossSalary = 0;
+    }
+
+    SalariedEmployee(int id, string name, string desg, float basic, float da, float hra)
+        : Employee(id, name, desg) {
+        basicSalary = basic;
+        DA = da;
+        HRA = hra;
+    }
+
+    void calculatepay() override {
+        grossSalary = basicSalary + DA + HRA;
+        cout << "Gross Salary (Salaried Employee): " << grossSalary << endl;
+    }
+
+    void display() override {
+        Employee::display();
+        cout << "Basic: " << basicSalary
+             << ", DA: " << DA
+             << ", HRA: " << HRA << endl;
+        calculatepay();
+    }
+};
+
+// Derived Class 2: CommissionEmp
+class CommissionEmp : virtual public Employee {
+protected:
+    float sales, rate, commissionSalary;
+
+public:
+    CommissionEmp() : Employee() {
+        sales = rate = commissionSalary = 0;
+    }
+
+    CommissionEmp(int id, string name, string desg, float s, float r)
+        : Employee(id, name, desg) {
+        sales = s;
+        rate = r;
+    }
+
+    void calculatepay() override {
+        commissionSalary = sales * rate;
+        cout << "Commission Salary: " << commissionSalary << endl;
+    }
+
+    void display() override {
+        Employee::display();
+        cout << "Sales: " << sales
+             << ", Rate: " << rate << endl;
+        calculatepay();
+    }
+};
+
+// Derived Class 3: Payment (inherits from both)
+class Payment : public SalariedEmployee, public CommissionEmp {
+    float bonus, totalPay;
+
+public:
+    Payment() : Employee() {
+        bonus = totalPay = 0;
+    }
+
+    Payment(int id, string name, string desg,
+            float basic, float da, float hra,
+            float s, float r, float b)
+        : Employee(id, name, desg),
+          SalariedEmployee(id, name, desg, basic, da, hra),
+          CommissionEmp(id, name, desg, s, r) {
+        bonus = b;
+    }
+
+    void calculatepay() override {
+        float grossSalary = basicSalary + DA + HRA;
+        float commission = sales * rate;
+        totalPay = grossSalary + commission + bonus;
+        cout << "Total Pay (Gross + Commission + Bonus): " << totalPay << endl;
+    }
+
+    void display() override {
+        cout << "\n--- PAYMENT DETAILS ---" << endl;
+        Employee::display();
+        cout << "Basic: " << basicSalary
+             << ", DA: " << DA
+             << ", HRA: " << HRA << endl;
+        cout << "Sales: " << sales
+             << ", Rate: " << rate << endl;
+        cout << "Bonus: " << bonus << endl;
+        calculatepay();
+    }
+};
+
+// Main function
+int main() {
+    int id;
+    string name, desg;
+    float basic, da, hra, sales, rate, bonus;
+
+    cout << "Enter Employee ID, Name, Designation: ";
+    cin >> id >> name >> desg;
+
+    cout << "Enter Basic Salary, DA, HRA: ";
+    cin >> basic >> da >> hra;
+
+    cout << "Enter Sales and Rate: ";
+    cin >> sales >> rate;
+
+    cout << "Enter Bonus: ";
+    cin >> bonus;
+
+    // Create objects
+    SalariedEmployee s(id, name, desg, basic, da, hra);
+    CommissionEmp c(id, name, desg, sales, rate);
+    Payment p(id, name, desg, basic, da, hra, sales, rate, bonus);
+
+    // Base class pointer
+    Employee *emp;
+
+    cout << "\n--- Using Base Class Pointer (Runtime Polymorphism) ---\n";
+
+    emp = &s;
+    emp->display();
+
+    emp = &c;
+    emp->display();
+
+    emp = &p;
+    emp->display();
+
+    return 0;
+}

@@ -1,0 +1,101 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class DataConsumption {
+private:
+    string name, id, phone, city, gender;
+    string billDate, dueDate;
+    int age, consumerNo, billNo;
+    double ratePerGB, totalUsage, billAmount;
+    const double MAX_LIMIT = 500; // e.g., 500 GB allowed limit
+
+public:
+    void generateBill() {
+        try {
+            cout << "Enter Bill Number: ";
+            cin >> billNo;
+            cin.ignore();
+
+            cout << "Enter Consumer Name: ";
+            getline(cin, name);
+
+            cout << "Enter Consumer Number: ";
+            cin >> consumerNo;
+            cin.ignore();
+
+            cout << "Enter Consumer ID (Aadhar/PAN): ";
+            getline(cin, id);
+
+            cout << "Enter Age: ";
+            cin >> age;
+            if (age < 18 || age > 60)
+                throw "Invalid age! Age must be between 18 and 60 years.";
+
+            cout << "Enter Gender: ";
+            cin >> gender;
+
+            cout << "Enter Phone Number: ";
+            cin >> phone;
+            if (phone.length() != 10)
+                throw "Invalid phone number! Must contain exactly 10 digits.";
+
+            cout << "Enter City: ";
+            cin >> city;
+
+            cout << "Enter Bill Issue Date (DD/MM/YYYY): ";
+            cin >> billDate;
+
+            cout << "Enter Due Date (DD/MM/YYYY): ";
+            cin >> dueDate;
+            if (dueDate.length() != 10 || dueDate[2] != '/' || dueDate[5] != '/')
+                throw "Invalid due date format! Use DD/MM/YYYY.";
+
+            cout << "Enter Total Data Used (in GB): ";
+            cin >> totalUsage;
+
+            cout << "Enter Rate per GB (Rs): ";
+            cin >> ratePerGB;
+
+            // Basic bill calculation
+            billAmount = totalUsage * ratePerGB;
+
+            if (totalUsage > MAX_LIMIT) {
+                cout << "\⚠️ Data usage exceeds " << MAX_LIMIT << " GB! Penalty of Rs. 1000 applied.\n";
+                billAmount += 1000; // penalty added
+            }
+
+            cout << "\n✅ Bill generated successfully!\n";
+            printBill();
+        }
+        catch (const char* msg) {
+            cout << "\n⚠️ Exception: " << msg << endl;
+        }
+    }
+
+    void printBill() {
+        cout << "\n------ Internet Bill ------\n";
+        cout << "Bill No: " << billNo << endl;
+        cout << "Consumer Name: " << name << endl;
+        cout << "Consumer No: " << consumerNo << endl;
+        cout << "ID: " << id << endl;
+        cout << "Age: " << age << endl;
+        cout << "Gender: " << gender << endl;
+        cout << "Phone: " << phone << endl;
+        cout << "City: " << city << endl;
+        cout << "Bill Date: " << billDate << endl;
+        cout << "Due Date: " << dueDate << endl;
+        cout << "Total Data Used: " << totalUsage << " GB" << endl;
+        cout << "Rate per GB: Rs. " << ratePerGB << endl;
+        cout << "Total Bill Amount: Rs. " << billAmount << endl;
+        cout << "---------------------------\n";
+    }
+};
+
+int main() {
+    DataConsumption d;
+    d.generateBill();
+
+    cout << "\nProgram executed successfully.\n";
+    return 0;
+}

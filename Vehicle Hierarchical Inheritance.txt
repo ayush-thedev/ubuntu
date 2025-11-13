@@ -1,0 +1,166 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Base class
+class Vehicle {
+protected:
+    string vehicle_no;
+    string vehicle_name;
+    int no_of_wheels;
+    string brand;
+
+public:
+    // Default constructor
+    Vehicle() {
+        vehicle_no = "";
+        vehicle_name = "";
+        no_of_wheels = 0;
+        brand = "";
+    }
+
+    // Parameterized constructor
+    Vehicle(string vno, string vname, int wheels, string b) {
+        vehicle_no = vno;
+        vehicle_name = vname;
+        no_of_wheels = wheels;
+        brand = b;
+    }
+
+    // Virtual function to calculate speed (to be overridden)
+    virtual void calculateSpeed() {
+        cout << "Speed of vehicle: Not defined" << endl;
+    }
+
+    // Virtual display function
+    virtual void display() {
+        cout << "\nVehicle No: " << vehicle_no;
+        cout << "\nVehicle Name: " << vehicle_name;
+        cout << "\nNo. of Wheels: " << no_of_wheels;
+        cout << "\nBrand: " << brand << endl;
+    }
+};
+
+// Derived class 1: Two-Wheeler
+class TwoWheeler : public Vehicle {
+    float distance2, time2, speed2;
+
+public:
+    // Default constructor
+    TwoWheeler() : Vehicle() {
+        distance2 = time2 = speed2 = 0;
+    }
+
+    // Parameterized constructor
+    TwoWheeler(string vno, string vname, int wheels, string b, float d, float t)
+        : Vehicle(vno, vname, wheels, b) {
+        distance2 = d;
+        time2 = t;
+    }
+
+    // Overriding calculateSpeed()
+    void calculateSpeed() override {
+        if (time2 != 0)
+            speed2 = distance2 / time2;
+        else
+            speed2 = 0;
+    }
+
+    // Display function
+    void display() override {
+        Vehicle::display();
+        calculateSpeed();
+        cout << "Distance: " << distance2 << " km"
+             << "\nTime: " << time2 << " hr"
+             << "\nSpeed of Two-Wheeler: " << speed2 << " km/hr\n";
+    }
+};
+
+// Derived class 2: Three-Wheeler
+class ThreeWheeler : public Vehicle {
+    float distance3, time3, speed3;
+
+public:
+    ThreeWheeler() : Vehicle() {
+        distance3 = time3 = speed3 = 0;
+    }
+
+    ThreeWheeler(string vno, string vname, int wheels, string b, float d, float t)
+        : Vehicle(vno, vname, wheels, b) {
+        distance3 = d;
+        time3 = t;
+    }
+
+    void calculateSpeed() override {
+        if (time3 != 0)
+            speed3 = distance3 / time3;
+        else
+            speed3 = 0;
+    }
+
+    void display() override {
+        Vehicle::display();
+        calculateSpeed();
+        cout << "Distance: " << distance3 << " km"
+             << "\nTime: " << time3 << " hr"
+             << "\nSpeed of Three-Wheeler: " << speed3 << " km/hr\n";
+    }
+};
+
+// Derived class 3: Four-Wheeler
+class FourWheeler : public Vehicle {
+    float distance4, time4, speed4;
+
+public:
+    FourWheeler() : Vehicle() {
+        distance4 = time4 = speed4 = 0;
+    }
+
+    FourWheeler(string vno, string vname, int wheels, string b, float d, float t)
+        : Vehicle(vno, vname, wheels, b) {
+        distance4 = d;
+        time4 = t;
+    }
+
+    void calculateSpeed() override {
+        if (time4 != 0)
+            speed4 = distance4 / time4;
+        else
+            speed4 = 0;
+    }
+
+    void display() override {
+        Vehicle::display();
+        calculateSpeed();
+        cout << "Distance: " << distance4 << " km"
+             << "\nTime: " << time4 << " hr"
+             << "\nSpeed of Four-Wheeler: " << speed4 << " km/hr\n";
+    }
+};
+
+// Main Function
+int main() {
+    cout << "Enter data members using getdata() function:\n";
+
+    string vno, vname, brand;
+    float distance, time;
+
+    cout << "\nEnter details for Two-Wheeler (No Name Wheels Brand Distance Time):\n";
+    cin >> vno >> vname >> brand >> distance >> time;
+    TwoWheeler tw(vno, vname, 2, brand, distance, time);
+
+    cout << "\nEnter details for Three-Wheeler (No Name Wheels Brand Distance Time):\n";
+    cin >> vno >> vname >> brand >> distance >> time;
+    ThreeWheeler thw(vno, vname, 3, brand, distance, time);
+
+    cout << "\nEnter details for Four-Wheeler (No Name Wheels Brand Distance Time):\n";
+    cin >> vno >> vname >> brand >> distance >> time;
+    FourWheeler fw(vno, vname, 4, brand, distance, time);
+
+    cout << "\n--- Vehicle Details with Speed ---\n";
+    tw.display();
+    thw.display();
+    fw.display();
+
+    return 0;
+}

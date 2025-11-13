@@ -1,0 +1,127 @@
+#include <iostream>
+using namespace std;
+
+// Base class
+class Shape {
+protected:
+    int no_of_sides;
+
+public:
+    // Default constructor
+    Shape() {
+        no_of_sides = 0;
+    }
+
+    // Virtual function for area
+    virtual void area() {
+        cout << "Area of shape: " << endl;
+    }
+
+    // Virtual function to accept data
+    virtual void getdata() {}
+
+    // Virtual function to display
+    virtual void display() {}
+};
+
+// Derived class 1: Square
+class Square : public Shape {
+    float side;
+
+public:
+    // Default constructor
+    Square() {
+        no_of_sides = 4;
+        side = 0;
+    }
+
+    void getdata() override {
+        cout << "Enter side length of square: ";
+        cin >> side;
+    }
+
+    void area() override {
+        cout << "Area of Square = " << (side * side) << endl;
+    }
+
+    void display() override {
+        cout << "\n--- Square ---" << endl;
+        cout << "No. of sides: " << no_of_sides << endl;
+        cout << "Side Length: " << side << endl;
+        area();
+    }
+};
+
+// Derived class 2: Rectangle
+class Rectangle : public Shape {
+    float length, breadth;
+
+public:
+    Rectangle() {
+        no_of_sides = 4;
+        length = breadth = 0;
+    }
+
+    void getdata() override {
+        cout << "Enter length and breadth of rectangle: ";
+        cin >> length >> breadth;
+    }
+
+    void area() override {
+        cout << "Area of Rectangle = " << (length * breadth) << endl;
+    }
+
+    void display() override {
+        cout << "\n--- Rectangle ---" << endl;
+        cout << "No. of sides: " << no_of_sides << endl;
+        cout << "Length: " << length << ", Breadth: " << breadth << endl;
+        area();
+    }
+};
+
+// Derived class 3: Triangle
+class Triangle : public Shape {
+    float base, height;
+
+public:
+    Triangle() {
+        no_of_sides = 3;
+        base = height = 0;
+    }
+
+    void getdata() override {
+        cout << "Enter base and height of triangle: ";
+        cin >> base >> height;
+    }
+
+    void area() override {
+        cout << "Area of Triangle = " << (0.5 * base * height) << endl;
+    }
+
+    void display() override {
+        cout << "\n--- Triangle ---" << endl;
+        cout << "No. of sides: " << no_of_sides << endl;
+        cout << "Base: " << base << ", Height: " << height << endl;
+        area();
+    }
+};
+
+// Main function
+int main() {
+    Square s;
+    Rectangle r;
+    Triangle t;
+
+    cout << "Enter data members using getdata/accept function:\n";
+
+    s.getdata();
+    r.getdata();
+    t.getdata();
+
+    cout << "\nDisplay area as per shape using display function:\n";
+    s.display();
+    r.display();
+    t.display();
+
+    return 0;
+}

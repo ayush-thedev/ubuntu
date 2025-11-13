@@ -1,0 +1,116 @@
+#include <iostream>
+#include <stack>
+#include <string>
+using namespace std;
+
+class UndoSimulator {
+private:
+    stack<string> actions;  // Stack to store actions
+
+public:
+    // Add an action to the stack
+    void addAction(const string &action) {
+        actions.push(action);
+        cout << "Action added: " << action << endl;
+    }
+
+    // Display all actions (without modifying stack)
+    void displayActions() {
+        if (actions.empty()) {
+            cout << "No actions performed yet.\n";
+            return;
+        }
+
+        cout << "\n--- Action History ---\n";
+
+        // Temporary stack to display without losing data
+        stack<string> temp = actions;
+        int count = 1;
+        while (!temp.empty()) {
+            cout << count++ << ". " << temp.top() << endl;
+            temp.pop();
+        }
+        cout << "----------------------\n";
+    }
+
+    // Undo the most recent action (pop)
+    void undoAction() {
+        if (actions.empty()) {
+            cout << "No actions to undo!\n";
+        } else {
+            cout << "Undoing: " << actions.top() << endl;
+            actions.pop();
+        }
+    }
+
+    // Peek the most recent action
+    void peekAction() {
+        if (actions.empty()) {
+            cout << "No recent action to view.\n";
+        } else {
+            cout << "Most recent action: " << actions.top() << endl;
+        }
+    }
+
+    // Check if stack is empty
+    void checkStackStatus() {
+        if (actions.empty())
+            cout << "Action stack is empty.\n";
+        else
+            cout << "Action stack has " << actions.size() << " action(s).\n";
+    }
+};
+
+// ------------------ MAIN FUNCTION ------------------
+int main() {
+    UndoSimulator editor;
+    int choice;
+    string action;
+
+    do {
+        cout << "\n====== Undo Operation Simulator ======\n";
+        cout << "1. Add Action\n";
+        cout << "2. Display Actions\n";
+        cout << "3. Undo Action\n";
+        cout << "4. Peek Recent Action\n";
+        cout << "5. Check Stack Status\n";
+        cout << "6. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+        cin.ignore(); // ignore newline
+
+        switch (choice) {
+        case 1:
+            cout << "Enter action (e.g., Typed 'A', Deleted 'B'): ";
+            getline(cin, action);
+            editor.addAction(action);
+            break;
+
+        case 2:
+            editor.displayActions();
+            break;
+
+        case 3:
+            editor.undoAction();
+            break;
+
+        case 4:
+            editor.peekAction();
+            break;
+
+        case 5:
+            editor.checkStackStatus();
+            break;
+
+        case 6:
+            cout << "Exiting simulator...\n";
+            break;
+
+        default:
+            cout << "Invalid choice! Please try again.\n";
+        }
+
+    } while (choice != 6);
+
+    return 0;
+}

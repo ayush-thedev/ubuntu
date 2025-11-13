@@ -1,0 +1,241 @@
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+class Patient {
+    int patient_id;
+    string name, disease, doctor, status;
+    int age;
+
+public:
+    // Default constructor
+    Patient() {
+        patient_id = 0;
+        age = 0;
+        name = disease = doctor = status = "";
+    }
+
+    // Parameterized constructor
+    Patient(int id, string n, int a, string d, string doc, string s) {
+        patient_id = id;
+        name = n;
+        age = a;
+        disease = d;
+        doctor = doc;
+        status = s;
+    }
+
+    // Get details
+    void getdata() {
+        cout << "\nEnter Patient ID: ";
+        cin >> patient_id;
+        cin.ignore();
+        cout << "Enter Name: ";
+        getline(cin, name);
+        cout << "Enter Age: ";
+        cin >> age;
+        cin.ignore();
+        cout << "Enter Disease: ";
+        getline(cin, disease);
+        cout << "Enter Doctor Name: ";
+        getline(cin, doctor);
+        cout << "Enter Status (Admitted/Discharged): ";
+        getline(cin, status);
+    }
+
+    // Display details
+    void displayPatient() {
+        cout << "\nPatient ID: " << patient_id
+             << "\nName: " << name
+             << "\nAge: " << age
+             << "\nDisease: " << disease
+             << "\nDoctor: " << doctor
+             << "\nStatus: " << status
+             << "\n-----------------------------";
+    }
+
+    // Modify details (doctor or status)
+    void modifyPatient() {
+        cout << "\nEnter new Doctor name: ";
+        cin.ignore();
+        getline(cin, doctor);
+        cout << "Enter new Status (Admitted/Discharged): ";
+        getline(cin, status);
+    }
+
+    // Accessors
+    int getID() { return patient_id; }
+    string getDoctor() { return doctor; }
+    string getStatus() { return status; }
+
+    void updateStatus() {
+        status = "Discharged";
+    }
+};
+
+// Add new patient
+void addPatient() {
+    ofstream fout("patient.dat", ios::binary | ios::app);
+    Patient p;
+    p.getdata();
+    fout.write((char*)&p, sizeof(p));
+    fout.close();
+    cout << "\nPatient record added successfully!\n";
+}
+
+// Display all patients
+void displayAll() {
+    ifstream fin("patient.dat", ios::binary);
+    Patient p;
+    while (fin.read((char*)&p, sizeof(p))) {
+        p.displayPatient();
+    }
+    fin.close();
+}
+
+// Search patient by ID or doctor
+void searchPatient() {
+    ifstream fin("patient.dat", ios::binary);
+    Patient p;
+    int choice, id;
+    string doc;
+    bool found = false;
+
+    cout << "\nSearch by:\n1. Patient ID\n2. Doctor Name\nEnter choice: ";
+    cin >> choice;
+    cin.ignore();
+
+    if (choice == 1) {
+        cout << "Enter Patient ID: ";
+        cin >> id;
+        while (fin.read((char*)&p, sizeof(p))) {
+            if (p.getID() == id) {
+                cout << "\nRecord Found!";
+                p.displayPatient();
+                found = true;
+            }
+        }
+    } else if (choice == 2) {
+        cout << "Enter Doctor Name: ";
+        getline(cin, doc);
+        while (fin.read((char*)&p, sizeof(p))) {
+            if (p.getDoctor() == doc) {
+                cout << "\nRecord Found!";
+                p.displayPatient();
+                found = true;
+            }
+        }
+    }
+
+    if (!found)
+        cout << "\nNo record found!";
+    fin.close();
+}
+
+// Modify patient details
+void modifyPatientRecord() {
+    fstream file("patient.dat", ios::binary | ios::in | ios::out);
+    Patient p;
+    int id;
+    bool found = false;
+    cout << "\nEnter Patient ID to modify: ";
+    cin >> id;
+
+    while (file.read((char*)&p, sizeof(p))) {
+        if (p.getID() == id) {
+            found = true;
+            p.modifyPatient();
+            int pos = -1 * sizeof(p);
+            file.seekp(pos, ios::cur);
+            file.write((char*)&p, sizeof(p));
+            cout << "\nRecord updated successfully!\n";
+            break;
+        }
+    }
+    if (!found)
+        cout << "\nPatient not found!";
+    file.close();
+}
+
+// Update patient status
+void updateStatus() {
+    fstream file("patient.dat", ios::binary | ios::in | ios::out);
+    Patient p;
+    int id;
+    bool found = false;
+    cout << "\nEnter Patient ID to update status: ";
+    cin >> id;
+
+    while (file.read((char*)&p, sizeof(p))) {
+        if (p.getID() == id) {
+            found = true;
+            p.updateStatus();
+            int pos = -1 * sizeof(p);
+            file.seekp(pos, ios::cur);
+            file.write((char*)&p, sizeof(p));
+            cout << "\nPatient status updated to 'Discharged'!\n";
+            break;
+        }
+    }
+    if (!found)
+        cout << "\nPatient not found!";
+    file.close();
+}
+
+// Delete patient record
+void deletePatient() {
+    ifstream fin("patient.dat", ios::binary);
+    ofstream fout("temp.dat", ios::binary);
+    Patient p;
+    int id;
+    bool deleted = false;
+
+    cout << "\nEnter Patient ID to delete: ";
+    cin >> id;
+
+    while (fin.read((char*)&p, sizeof(p))) {
+        if (p.getID() != id)
+            fout.write((char*)&p, sizeof(p));
+        else
+            deleted = true;
+    }
+
+    fin.close();
+    fout.close();
+    remove("patient.dat");
+    rename("temp.dat", "patient.dat");
+
+    if (deleted)
+        cout << "\nPatient record deleted successfully!\n";
+    else
+        cout << "\nPatient not found!";
+}
+
+// Main function
+int main() {
+    int choice;
+    do {
+        cout << "\n====== Patient Record System ======";
+        cout << "\n1. Add New Patient";
+        cout << "\n2. Display All Patients";
+        cout << "\n3. Search Patient";
+        cout << "\n4. Modify Patient Details";
+        cout << "\n5. Update Patient Status";
+        cout << "\n6. Delete Patient Record";
+        cout << "\n7. Exit";
+        cout << "\nEnter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1: addPatient(); break;
+        case 2: displayAll(); break;
+        case 3: searchPatient(); break;
+        case 4: modifyPatientRecord(); break;
+        case 5: updateStatus(); break;
+        case 6: deletePatient(); break;
+        case 7: cout << "\nExiting Patient System...\n"; break;
+        default: cout << "\nInvalid choice! Try again.\n";
+        }
+    } while (choice != 7);
+    return 0;
+}

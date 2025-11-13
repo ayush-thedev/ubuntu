@@ -1,0 +1,127 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class MobilePhone {
+private:
+    string Mobile_brand;
+    string Mobile_model;
+    float Mobile_price;
+    float Mobile_batterylife;
+    string Mobile_simno;
+    
+    static int total_mobiles;
+
+public:
+    // Default Constructor
+    MobilePhone() {
+        Mobile_brand = "Unknown";
+        Mobile_model = "Unknown";
+        Mobile_price = 0.0;
+        Mobile_batterylife = 0.0;
+        Mobile_simno = "0000000000";
+        total_mobiles++;
+    }
+    
+    // Parameterized Constructor
+    MobilePhone(string brand, string model, float price, float battery, string simno) {
+        Mobile_brand = brand;
+        Mobile_model = model;
+        Mobile_price = price;
+        Mobile_batterylife = battery;
+        Mobile_simno = simno;
+        total_mobiles++;
+        cout << "Mobile Created: Brand=" << Mobile_brand << ", Model=" << Mobile_model << endl;
+    }
+    
+    // Destructor
+    ~MobilePhone() {
+        cout << "Destroying Mobile: " << Mobile_brand << " " << Mobile_model << endl;
+        total_mobiles--;
+    }
+    
+    void display() {
+        cout << "\n--- Mobile Details ---" << endl;
+        cout << "Brand: " << Mobile_brand << endl;
+        cout << "Model: " << Mobile_model << endl;
+        cout << "Price: " << Mobile_price << endl;
+        cout << "Battery Life: " << Mobile_batterylife << " hours" << endl;
+        cout << "SIM Number: " << Mobile_simno << endl;
+    }
+    
+    bool isAffordable(float budget) {
+        return Mobile_price <= budget;
+    }
+    
+    static void displayMobileCount() {
+        cout << "\nTotal Mobiles: " << total_mobiles << endl;
+    }
+};
+
+// Initialize static member
+int MobilePhone::total_mobiles = 0;
+
+int main() {
+    string brand, model, simno;
+    float price, battery, budget;
+    int choice;
+    
+    // Create first mobile
+    cout << "Enter Brand: ";
+    cin >> brand;
+    cout << "Enter Model: ";
+    cin >> model;
+    cout << "Enter Price: ";
+    cin >> price;
+    cout << "Enter Battery Life (in hours): ";
+    cin >> battery;
+    cout << "Enter SIM Number: ";
+    cin >> simno;
+    
+    MobilePhone mobile1(brand, model, price, battery, simno);
+    cout << "Price=" << price << endl;
+    
+    // Check affordability
+    cout << "\nEnter your budget: ";
+    cin >> budget;
+    
+    if(mobile1.isAffordable(budget)) {
+        cout << "Affordable: Yes" << endl;
+    } else {
+        cout << "Affordable: No" << endl;
+    }
+    
+    // Display mobile details
+    mobile1.display();
+    
+    // Ask to create more mobiles
+    cout << "\nDo you want to create another mobile? (1=Yes, 0=No): ";
+    cin >> choice;
+    
+    if(choice == 1) {
+        cout << "\nEnter Brand: ";
+        cin >> brand;
+        cout << "Enter Model: ";
+        cin >> model;
+        cout << "Enter Price: ";
+        cin >> price;
+        cout << "Enter Battery Life (in hours): ";
+        cin >> battery;
+        cout << "Enter SIM Number: ";
+        cin >> simno;
+        
+        MobilePhone mobile2(brand, model, price, battery, simno);
+        mobile2.display();
+        
+        if(mobile2.isAffordable(budget)) {
+            cout << "Affordable: Yes" << endl;
+        } else {
+            cout << "Affordable: No" << endl;
+        }
+    }
+    
+    // Display total count
+    MobilePhone::displayMobileCount();
+    
+    return 0;
+}

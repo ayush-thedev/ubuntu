@@ -1,0 +1,106 @@
+#include <iostream>
+using namespace std;
+
+class Calculator {
+    float num1, num2;
+
+public:
+    // Default constructor
+    Calculator() {
+        num1 = num2 = 0;
+    }
+
+    // Friend function for input (>>)
+    friend istream& operator>>(istream& in, Calculator& c);
+
+    // Friend functions for arithmetic operations
+    friend Calculator operator+(Calculator c1, Calculator c2);
+    friend Calculator operator-(Calculator c1, Calculator c2);
+    friend Calculator operator*(Calculator c1, Calculator c2);
+    friend Calculator operator/(Calculator c1, Calculator c2);
+
+    // Prefix increment operator
+    Calculator operator++() {
+        ++num1;
+        ++num2;
+        return *this;
+    }
+
+    // Display result
+    void display() {
+        cout << num1 << " " << num2 << endl;
+    }
+
+    // Function to print single result (for +, -, *, /)
+    void showResult() {
+        cout << num1 << endl;
+    }
+};
+
+// Overload >> operator (input)
+istream& operator>>(istream& in, Calculator& c) {
+    in >> c.num1 >> c.num2;
+    return in;
+}
+
+// Overload + operator
+Calculator operator+(Calculator c1, Calculator c2) {
+    Calculator temp;
+    temp.num1 = c1.num1 + c2.num1;
+    temp.num2 = c1.num2 + c2.num2;
+    return temp;
+}
+
+// Overload - operator
+Calculator operator-(Calculator c1, Calculator c2) {
+    Calculator temp;
+    temp.num1 = c1.num1 - c2.num1;
+    temp.num2 = c1.num2 - c2.num2;
+    return temp;
+}
+
+// Overload * operator
+Calculator operator*(Calculator c1, Calculator c2) {
+    Calculator temp;
+    temp.num1 = c1.num1 * c2.num1;
+    temp.num2 = c1.num2 * c2.num2;
+    return temp;
+}
+
+// Overload / operator
+Calculator operator/(Calculator c1, Calculator c2) {
+    Calculator temp;
+    temp.num1 = c1.num1 / c2.num1;
+    temp.num2 = c1.num2 / c2.num2;
+    return temp;
+}
+
+// Main function
+int main() {
+    Calculator c1, c2, result;
+
+    cout << "Enter values: ";
+    cin >> c1 >> c2;
+
+    result = c1 + c2;
+    cout << "Addition = ";
+    result.showResult();
+
+    result = c1 - c2;
+    cout << "Subtraction = ";
+    result.showResult();
+
+    result = c1 * c2;
+    cout << "Multiplication = ";
+    result.showResult();
+
+    result = c1 / c2;
+    cout << "Division = ";
+    result.showResult();
+
+    ++c1;
+    cout << "Incremented values = ";
+    c1.display();
+
+    return 0;
+}

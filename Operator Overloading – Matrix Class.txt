@@ -1,0 +1,81 @@
+#include <iostream>
+#include <vector>
+#include <stdexcept> // for exception handling
+using namespace std;
+
+class Matrix {
+private:
+    vector<vector<int>> data;
+
+public:
+    // Constructors
+    Matrix() {}
+    Matrix(int rows, int cols) {
+        data.resize(rows, vector<int>(cols, 0));
+    }
+
+    // Input function
+    void input() {
+        int rows = data.size(), cols = data[0].size();
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                cin >> data[i][j];
+            }
+        }
+    }
+
+    // Accessors
+    int rows() const { return data.size(); }
+    int cols() const { return data.empty() ? 0 : data[0].size(); }
+
+    // Operator overloading for '+'
+    Matrix operator+(const Matrix& other) const {
+        if (rows() != other.rows() || cols() != other.cols()) {
+            throw runtime_error("Error: Matrix dimensions do not match!");
+        }
+
+        Matrix result(rows(), cols());
+        for (int i = 0; i < rows(); i++) {
+            for (int j = 0; j < cols(); j++) {
+                result.data[i][j] = data[i][j] + other.data[i][j];
+            }
+        }
+        return result;
+    }
+
+    // Print function
+    void print() const {
+        for (const auto& row : data) {
+            for (int val : row)
+                cout << val << " ";
+            cout << endl;
+        }
+    }
+
+    // Function to resize for input
+    void resize(int r, int c) {
+        data.assign(r, vector<int>(c, 0));
+    }
+};
+
+// Main function (HackerRank style)
+int main() {
+    try {
+        int r1, c1, r2, c2;
+        cin >> r1 >> c1;
+        Matrix A(r1, c1);
+        A.input();
+
+        cin >> r2 >> c2;
+        Matrix B(r2, c2);
+        B.input();
+
+        Matrix C = A + B;
+        C.print();
+    }
+    catch (const exception& e) {
+        cerr << e.what() << endl;
+    }
+
+    return 0;
+}

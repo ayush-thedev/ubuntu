@@ -1,0 +1,153 @@
+#include <iostream>
+using namespace std;
+
+template <class T>
+class StudentPerformance {
+    T performance[50]; // fixed-size array
+    int size;          // current number of elements
+    int capacity;      // max capacity
+
+public:
+    // Default constructor
+    StudentPerformance() {
+        size = 0;
+        capacity = 50;
+    }
+
+    // Parameterized constructor
+    StudentPerformance(int cap) {
+        size = 0;
+        capacity = cap;
+    }
+
+    // Add performance value
+    void addPerformance(T p) {
+        if (size < capacity)
+            performance[size++] = p;
+        else
+            cout << "\nArray is full!";
+    }
+
+    // Display all performance values
+    void displayPerformance() {
+        cout << "\nStudent Performance Values: ";
+        for (int i = 0; i < size; i++)
+            cout << performance[i] << " ";
+        cout << endl;
+    }
+
+    // Find minimum performance
+    T getMinPerformance() {
+        if (size == 0) {
+            cout << "\nNo data available!";
+            return 0;
+        }
+        T minVal = performance[0];
+        for (int i = 1; i < size; i++) {
+            if (performance[i] < minVal)
+                minVal = performance[i];
+        }
+        return minVal;
+    }
+
+    // Find maximum performance
+    T getMaxPerformance() {
+        if (size == 0) {
+            cout << "\nNo data available!";
+            return 0;
+        }
+        T maxVal = performance[0];
+        for (int i = 1; i < size; i++) {
+            if (performance[i] > maxVal)
+                maxVal = performance[i];
+        }
+        return maxVal;
+    }
+
+    // Calculate average performance (for percentages only)
+    double getAveragePerformance() {
+        if (size == 0) return 0;
+        double sum = 0;
+        for (int i = 0; i < size; i++)
+            sum += performance[i];
+        return sum / size;
+    }
+
+    // Search for a specific performance value
+    bool searchPerformance(T p) {
+        for (int i = 0; i < size; i++) {
+            if (performance[i] == p)
+                return true;
+        }
+        return false;
+    }
+};
+
+// Main function
+int main() {
+    int choice;
+
+    cout << "Choose type of performance data:\n1. Percentage (float)\n2. Grade (char)\nEnter choice: ";
+    cin >> choice;
+
+    if (choice == 1) {
+        // Float type (percentages)
+        StudentPerformance<float> sp(10);
+        int n;
+        cout << "\nHow many student percentages to enter: ";
+        cin >> n;
+
+        for (int i = 0; i < n; i++) {
+            float val;
+            cout << "Enter percentage " << i + 1 << ": ";
+            cin >> val;
+            sp.addPerformance(val);
+        }
+
+        sp.displayPerformance();
+        cout << "\nLowest Percentage: " << sp.getMinPerformance();
+        cout << "\nHighest Percentage: " << sp.getMaxPerformance();
+        cout << "\nAverage Percentage: " << sp.getAveragePerformance();
+
+        float searchVal;
+        cout << "\nEnter percentage to search: ";
+        cin >> searchVal;
+        if (sp.searchPerformance(searchVal))
+            cout << "Found!";
+        else
+            cout << "Not Found!";
+    }
+
+    else if (choice == 2) {
+        // Char type (grades)
+        StudentPerformance<char> sp(10);
+        int n;
+        cout << "\nHow many student grades to enter: ";
+        cin >> n;
+
+        for (int i = 0; i < n; i++) {
+            char grade;
+            cout << "Enter grade " << i + 1 << ": ";
+            cin >> grade;
+            sp.addPerformance(grade);
+        }
+
+        sp.displayPerformance();
+        cout << "\nLowest Grade: " << sp.getMinPerformance();
+        cout << "\nHighest Grade: " << sp.getMaxPerformance();
+
+        char searchGrade;
+        cout << "\nEnter grade to search: ";
+        cin >> searchGrade;
+        if (sp.searchPerformance(searchGrade))
+            cout << "Found!";
+        else
+            cout << "Not Found!";
+    }
+
+    else {
+        cout << "Invalid choice!";
+    }
+
+    return 0;
+}

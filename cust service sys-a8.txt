@@ -1,0 +1,124 @@
+#include <iostream>
+#include <queue>
+#include <string>
+using namespace std;
+
+class CustomerServiceQueue {
+private:
+    queue<string> customers; // Queue to store customer names
+    int maxSize;             // Optional queue limit (for demonstration)
+
+public:
+    // Constructor to set optional queue capacity
+    CustomerServiceQueue(int limit = 10) {
+        maxSize = limit;
+    }
+
+    // Add a new customer (enqueue)
+    void addCustomer(const string &name) {
+        if (customers.size() >= maxSize) {
+            cout << "⚠️ Queue is full! Cannot add more customers.\n";
+        } else {
+            customers.push(name);
+            cout << "✅ " << name << " added to the queue.\n";
+        }
+    }
+
+    // Serve the next customer (dequeue)
+    void serveCustomer() {
+        if (customers.empty()) {
+            cout << "⚠️ No customers to serve. Queue is empty.\n";
+        } else {
+            cout << "🧾 Serving " << customers.front() << "...\n";
+            customers.pop();
+        }
+    }
+
+    // Display all customers currently in the queue
+    void displayQueue() {
+        if (customers.empty()) {
+            cout << "No customers waiting in the queue.\n";
+            return;
+        }
+
+        cout << "\n--- Current Queue ---\n";
+        queue<string> temp = customers; // Copy queue for display
+        int position = 1;
+        while (!temp.empty()) {
+            cout << position++ << ". " << temp.front() << endl;
+            temp.pop();
+        }
+        cout << "----------------------\n";
+    }
+
+    // Check queue status
+    void checkStatus() {
+        if (customers.empty())
+            cout << "Queue is empty.\n";
+        else if (customers.size() == maxSize)
+            cout << "Queue is full.\n";
+        else
+            cout << "Queue has " << customers.size() << " customer(s) waiting.\n";
+    }
+
+    // Clear queue (e.g., end of the day)
+    void clearQueue() {
+        while (!customers.empty())
+            customers.pop();
+
+        cout << "✅ All customers have been cleared from the queue.\n";
+    }
+};
+
+// ---------------- MAIN FUNCTION ----------------
+int main() {
+    CustomerServiceQueue service(5); // limit queue size to 5 customers
+    int choice;
+    string name;
+
+    do {
+        cout << "\n====== Customer Service Queue System ======\n";
+        cout << "1. Add Customer\n";
+        cout << "2. Display Queue\n";
+        cout << "3. Serve Customer\n";
+        cout << "4. Check Queue Status\n";
+        cout << "5. Clear Queue\n";
+        cout << "6. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+        cin.ignore(); // clear buffer
+
+        switch (choice) {
+        case 1:
+            cout << "Enter customer name: ";
+            getline(cin, name);
+            service.addCustomer(name);
+            break;
+
+        case 2:
+            service.displayQueue();
+            break;
+
+        case 3:
+            service.serveCustomer();
+            break;
+
+        case 4:
+            service.checkStatus();
+            break;
+
+        case 5:
+            service.clearQueue();
+            break;
+
+        case 6:
+            cout << "Exiting system... Goodbye!\n";
+            break;
+
+        default:
+            cout << "Invalid choice! Please try again.\n";
+        }
+    } while (choice != 6);
+
+    return 0;
+}
